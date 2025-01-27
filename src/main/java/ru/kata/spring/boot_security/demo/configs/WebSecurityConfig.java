@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.configs;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,13 +17,11 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final SuccessUserHandler successUserHandler;
     private final UserService userService;
 
     @Autowired
     @Lazy
-    public WebSecurityConfig(UserService userService, SuccessUserHandler successUserHandler) {
-        this.successUserHandler = successUserHandler;
+    public WebSecurityConfig(UserService userService) {
         this.userService = userService;
     }
 
@@ -33,13 +32,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin", "/user").hasRole("ADMIN")
                 .antMatchers("/user").hasRole("USER")
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .successHandler(successUserHandler)
-                .permitAll()
                 .and()
                 .logout();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
     @Bean

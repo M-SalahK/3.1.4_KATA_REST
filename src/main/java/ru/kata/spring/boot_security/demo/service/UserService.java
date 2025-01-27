@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.Repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.Repository.UserRepository;
+import ru.kata.spring.boot_security.demo.dto.UserDTO;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 
@@ -20,13 +23,14 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
 
+    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, @Lazy PasswordEncoder bCryptPasswordEncoder) {
+    @Autowired
+    public UserService(UserRepository userRepository, @Lazy PasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.modelMapper = modelMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -52,32 +56,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void saveUser(User user, List<Role> roles) {
-        User user1 = userRepository.findByUsername(user.getUsername());
-
-        if (user1 != null) {
-            throw new RuntimeException("Пользователь c таким логином уже существует!");
-        }
-        if (user.getRoles().isEmpty()) {
-            Role defaultRole = roleRepository.findById(2L).orElseThrow(() -> new RuntimeException("Роль по умолчанию не найдена"));
-            user.setRoles(Collections.singletonList(defaultRole));
-        } else {
-            user.setRoles(roles);
-        }
-
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
     @Transactional
-    public void updateUser(User user, List<Role> roles, Long id) {
+    public void updateToUser(User user, Long id) {
         User findUser = findUserById(id);
         findUser.setUsername(user.getUsername());
         findUser.setAge(user.getAge());
         findUser.setEmail(user.getEmail());
         findUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        findUser.getRoles().clear();
-        findUser.setRoles(roles);
         userRepository.save(findUser);
     }
 
@@ -85,4 +74,13 @@ public class UserService implements UserDetailsService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+
+    public User converToUser(UserDTO userDTO) {
+        return modelMapper.map(userDTO, User.class);
+    }
+
+    public UserDTO converToUserDTO(User user) {
+        return modelMapper.map(user, UserDTO.class);
+    }
+
 }
