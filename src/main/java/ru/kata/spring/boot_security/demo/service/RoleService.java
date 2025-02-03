@@ -15,7 +15,6 @@ public class RoleService implements UserDetailsService {
 
     RoleRepository roleRepository;
 
-
     @Autowired
     public RoleService(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
@@ -29,6 +28,5 @@ public class RoleService implements UserDetailsService {
     public List<Role> getRoles() {
         return roleRepository.findAll();
     }
-
 
 }

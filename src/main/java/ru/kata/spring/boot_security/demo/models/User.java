@@ -1,6 +1,9 @@
 package ru.kata.spring.boot_security.demo.models;
 
 import com.sun.istack.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,11 +11,13 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
-
+@NoArgsConstructor
+@Setter
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,13 +31,16 @@ public class User implements UserDetails {
     @Column
     private String password;
 
+    @Getter
     @Column(name = "age")
     private int age;
 
+    @Getter
     @Column(name = "email")
     private String email;
 
 
+    @Getter
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
@@ -41,42 +49,6 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(
                     name = "role_name", referencedColumnName = "id"))
     private List<Role> roles;
-
-    public User() {
-    }
-
-    public User(Long id, String username, int age, String password, String email) {
-        this.id = id;
-        this.username = username;
-        this.age = age;
-        this.password = password;
-        this.email = email;
-    }
-
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -114,19 +86,4 @@ public class User implements UserDetails {
         return password;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
