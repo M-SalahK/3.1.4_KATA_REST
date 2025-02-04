@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.dto.UserDTO;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
-    private final RoleService roleService;
 
     @GetMapping()
     public List<User> getAllUsers() {

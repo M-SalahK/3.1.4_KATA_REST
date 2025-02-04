@@ -23,7 +23,6 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
