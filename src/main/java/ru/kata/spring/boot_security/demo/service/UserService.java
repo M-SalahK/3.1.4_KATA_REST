@@ -19,21 +19,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
-    private final PasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
-        }
-        return user;
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     public User findUserById(Long id) {
+
         Optional<User> user = userRepository.findById(id);
         return user.orElse(new User());
     }
@@ -44,17 +42,20 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     @Transactional
     public void updateToUser(User user, Long id) {
-        User findUser = findUserById(id);
-        findUser.setUsername(user.getUsername());
-        findUser.setAge(user.getAge());
-        findUser.setEmail(user.getEmail());
-        findUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(findUser);
+
+        User userForUpdate = findUserById(id);
+        userForUpdate.setUsername(user.getUsername());
+        userForUpdate.setAge(user.getAge());
+        userForUpdate.setEmail(user.getEmail());
+        userForUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
+        userForUpdate.setRoles(user.getRoles());
+        userRepository.save(userForUpdate);
     }
 
     @Transactional
