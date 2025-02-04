@@ -27,7 +27,6 @@ public class AdminController {
         userService.updateToUser(user, id);
     }
 
-
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         userService.deleteUser(id);

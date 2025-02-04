@@ -23,7 +23,6 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @NotNull
     @Column(name = "username")
     private String username;
@@ -39,7 +38,6 @@ public class User implements UserDetails {
     @Getter
     @Column(name = "email")
     private String email;
-
 
     @Getter
     @ManyToMany(fetch = FetchType.EAGER)
