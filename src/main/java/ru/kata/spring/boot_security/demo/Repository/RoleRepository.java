@@ -9,6 +9,4 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @Override
     List<Role> findAllById(Iterable<Long> longs);
-
-    Role findByName(String name);
 }

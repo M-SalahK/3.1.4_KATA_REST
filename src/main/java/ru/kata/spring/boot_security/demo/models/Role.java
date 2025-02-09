@@ -5,8 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 @Setter
@@ -24,10 +26,6 @@ public class Role implements GrantedAuthority {
     public String toString() {
         return name;
     }
-
-    @Transient
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
 
     @Override
     public String getAuthority() {

@@ -46,7 +46,7 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
-                    name = "role_name", referencedColumnName = "id"))
+                    name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 
     @Override
